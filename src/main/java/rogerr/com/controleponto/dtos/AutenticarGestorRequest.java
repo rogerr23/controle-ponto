@@ -1,0 +1,22 @@
+package rogerr.com.controleponto.dtos;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class AutenticarGestorRequest {
+
+    @Email(message = "Informe um email válido.")
+    @NotEmpty(message = "Informe o email do funcionário")
+    private String email;
+
+    @NotEmpty(message = "Informe a senha do funcionário")
+    private String senha;
+}
