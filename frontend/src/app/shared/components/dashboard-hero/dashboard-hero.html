@@ -1,0 +1,44 @@
+<section class="intro">
+  <div>
+    <p class="eyebrow">
+      {{ perfil() === "GESTOR" ? "GESTÃO DE EQUIPE" : "MINHA JORNADA" }}
+    </p>
+    @if (perfil() === "GESTOR") {
+      <h1>Onde sua equipe<br /><em>esteve hoje.</em></h1>
+    } @else {
+      <h1>Olá, {{ usuario().nome.split(" ")[0] }}.<br /><em>Vamos começar?</em></h1>
+    }
+    <p class="intro-copy">
+      {{ perfil() === "GESTOR"
+        ? "Acompanhe os registros de ponto e suas localizações em um só lugar."
+        : "Registre sua jornada e acompanhe todo o seu histórico com localização." }}
+    </p>
+  </div>
+
+  <div class="summary">
+    <div class="summary-item">
+      <span class="summary-icon pin-icon">⌖</span>
+      <div>
+        <strong>{{ totalRegistros() }}</strong>
+        <span>registros exibidos</span>
+      </div>
+    </div>
+    <div class="summary-item">
+      <span class="summary-icon people-icon">◎</span>
+      <div>
+        <strong>{{ totalFuncionarios() }}</strong>
+        <span>{{ perfil() === "GESTOR" ? "funcionários" : "no histórico" }}</span>
+      </div>
+    </div>
+    <div class="summary-item last-update">
+      <span>ÚLTIMA ATUALIZAÇÃO</span>
+      <strong>
+        @if (ultimaAtualizacao()) {
+          {{ ultimaAtualizacao() | date: "HH:mm" }}
+        } @else {
+          —
+        }
+      </strong>
+    </div>
+  </div>
+</section>

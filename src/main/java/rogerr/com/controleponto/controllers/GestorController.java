@@ -25,7 +25,7 @@ public class GestorController {
         return ResponseEntity.status(201).body(gestorService.cadastrar(request));
     }
 
-    @GetMapping("obter/{id}")
+    @GetMapping("/obter/{id}")
     public ResponseEntity<GestorResponse> getById(@PathVariable UUID id) throws Exception {
         return ResponseEntity.status(200).body(gestorService.consultarPorId(id));
     }

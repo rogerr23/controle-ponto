@@ -26,9 +26,15 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     @Override
     public FuncionarioResponse cadastrar(FuncionarioRequest request) {
+        String email = request.getEmail().trim().toLowerCase();
+        if (funcionarioRepository.existsByEmailIgnoreCase(email)) {
+            throw new IllegalArgumentException("Já existe um funcionário cadastrado com este email.");
+        }
 
         Funcionario funcionario = modelMapper.map(request, Funcionario.class);
         funcionario.setId(UUID.randomUUID());
+        funcionario.setNome(request.getNome().trim());
+        funcionario.setEmail(email);
 
         funcionarioRepository.save(funcionario);
 

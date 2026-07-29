@@ -31,7 +31,7 @@ public class FuncionarioController {
         return ResponseEntity.status(200).body(funcionarioService.consultar());
     }
 
-    @GetMapping("obter/id")
+    @GetMapping("/obter/{id}")
     public ResponseEntity<FuncionarioResponse> getById(@PathVariable UUID id) throws Exception {
         return ResponseEntity.status(200).body(funcionarioService.consultarPorId(id));
     }

@@ -1,0 +1,43 @@
+<header class="topbar">
+  <a class="brand" href="#" aria-label="Ponto no mapa">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 21s7-5.3 7-12A7 7 0 0 0 5 9c0 6.7 7 12 7 12Z" />
+        <circle cx="12" cy="9" r="2.4" />
+      </svg>
+    </span>
+    <span>Ponto<span class="brand-light">Mapa</span></span>
+  </a>
+
+  <nav [class.aberto]="menuAberto()" aria-label="Navegação principal">
+    @if (perfil() === "FUNCIONARIO") {
+      <a class="ativo" href="#registrar" (click)="rolar($event, 'registrar')">Registrar ponto</a>
+    } @else {
+      <a class="ativo" href="#mapa" (click)="rolar($event, 'mapa')">Visão geral</a>
+      <a href="#funcionarios" (click)="rolar($event, 'funcionarios')">Funcionários</a>
+    }
+    <a href="#historico" (click)="rolar($event, 'historico')">Histórico</a>
+  </nav>
+
+  <div class="header-actions">
+    @if (modoDemo()) {
+      <button class="demo-badge" type="button" (click)="recarregar.emit()">
+        Dados de demonstração
+      </button>
+    }
+    <div class="user-label">
+      <strong>{{ usuario().nome }}</strong>
+      <span>{{ perfil() === "GESTOR" ? "Gestor" : "Funcionário" }}</span>
+    </div>
+    <button class="logout-button" type="button" (click)="auth.sair()">Sair</button>
+    <button
+      class="menu-button"
+      type="button"
+      aria-label="Abrir menu"
+      (click)="menuAberto.set(!menuAberto())"
+    >
+      <span></span><span></span><span></span>
+    </button>
+    <div class="avatar">{{ usuario().nome.slice(0, 2).toUpperCase() }}</div>
+  </div>
+</header>

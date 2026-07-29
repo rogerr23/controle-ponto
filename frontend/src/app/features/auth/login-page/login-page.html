@@ -1,0 +1,98 @@
+<main class="login-page">
+  <section class="login-visual">
+    <a class="brand login-brand" href="#" aria-label="Ponto no mapa">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 21s7-5.3 7-12A7 7 0 0 0 5 9c0 6.7 7 12 7 12Z" />
+          <circle cx="12" cy="9" r="2.4" />
+        </svg>
+      </span>
+      <span>Ponto<span class="brand-light">Mapa</span></span>
+    </a>
+    <div class="login-message">
+      <p class="eyebrow">PONTO COM LOCALIZAÇÃO</p>
+      <h1>Seu trabalho,<br /><em>no lugar certo.</em></h1>
+      <p>
+        Registre sua jornada com segurança ou acompanhe sua equipe em tempo real.
+      </p>
+    </div>
+    <div class="login-map-art" aria-hidden="true">
+      <span class="route route-one"></span>
+      <span class="route route-two"></span>
+      <i class="art-pin pin-one">⌖</i>
+      <i class="art-pin pin-two">⌖</i>
+      <i class="art-pin pin-three">⌖</i>
+    </div>
+    <small>Controle simples. Informação transparente.</small>
+  </section>
+
+  <section class="login-panel">
+    <div class="login-card">
+      <p class="eyebrow">BEM-VINDO</p>
+      <h2>Entre na sua conta</h2>
+      <p class="login-copy">Escolha seu perfil para acessar o painel correto.</p>
+
+      <div class="profile-switch" role="tablist" aria-label="Tipo de acesso">
+        <button
+          type="button"
+          [class.active]="perfil() === 'FUNCIONARIO'"
+          (click)="escolherPerfil('FUNCIONARIO')"
+        >
+          <span>◉</span>
+          <span><strong>Funcionário</strong><small>Bater e consultar ponto</small></span>
+        </button>
+        <button
+          type="button"
+          [class.active]="perfil() === 'GESTOR'"
+          (click)="escolherPerfil('GESTOR')"
+        >
+          <span>◎</span>
+          <span><strong>Gestor</strong><small>Acompanhar a equipe</small></span>
+        </button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="entrar()">
+        <label class="login-field">
+          <span>E-mail</span>
+          <div>
+            <i>✉</i>
+            <input
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              placeholder="voce@empresa.com"
+            />
+          </div>
+        </label>
+        <label class="login-field">
+          <span>Senha</span>
+          <div>
+            <i>○</i>
+            <input
+              type="password"
+              formControlName="senha"
+              autocomplete="current-password"
+              placeholder="Digite sua senha"
+            />
+          </div>
+        </label>
+
+        @if (erro()) {
+          <p class="form-error">{{ erro() }}</p>
+        }
+
+        <button class="login-submit" type="submit" [disabled]="autenticando()">
+          {{ autenticando() ? "Entrando…" : "Entrar" }}
+          <span>→</span>
+        </button>
+      </form>
+
+      <div class="demo-access">
+        <span>ou teste sem a API</span>
+        <button type="button" (click)="entrarDemo()">
+          Entrar como {{ perfil() === "GESTOR" ? "gestor" : "funcionário" }} demo
+        </button>
+      </div>
+    </div>
+  </section>
+</main>

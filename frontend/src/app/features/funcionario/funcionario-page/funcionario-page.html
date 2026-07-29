@@ -1,0 +1,74 @@
+<div class="app-shell">
+  <app-header
+    [usuario]="usuario"
+    perfil="FUNCIONARIO"
+    [modoDemo]="!!usuario.demo"
+    (recarregar)="carregarDados()"
+  />
+  <main>
+    <app-dashboard-hero
+      [usuario]="usuario"
+      perfil="FUNCIONARIO"
+      [totalRegistros]="resumo().registros"
+      [totalFuncionarios]="resumo().funcionarios"
+      [ultimaAtualizacao]="ultimaAtualizacao()"
+    />
+
+    <section class="clock-section" id="registrar">
+      <div class="clock-card">
+        <div class="clock-heading">
+          <div>
+            <p class="eyebrow">REGISTRAR AGORA</p>
+            <h2>O que você vai registrar?</h2>
+            <p>A localização atual será incluída automaticamente no registro.</p>
+          </div>
+          <div class="clock-time">
+            <strong>{{ ultimaAtualizacao() | date: "HH:mm" }}</strong>
+            <span>último registro</span>
+          </div>
+        </div>
+
+        <div class="operation-grid">
+          @for (operacao of ordemOperacoes; track operacao) {
+            <button
+              type="button"
+              [class.suggested]="proximaOperacao() === operacao"
+              [class]="operacoes[operacao].classe"
+              [disabled]="registrandoOperacao() !== null"
+              (click)="registrarPonto(operacao)"
+            >
+              <span class="operation-number">0{{ $index + 1 }}</span>
+              <i [style.background]="operacoes[operacao].cor">⌖</i>
+              <strong>{{ operacoes[operacao].curta }}</strong>
+              <small>{{ operacoes[operacao].label }}</small>
+              @if (proximaOperacao() === operacao) {
+                <em>Próximo sugerido</em>
+              }
+              @if (registrandoOperacao() === operacao) {
+                <span class="button-loading">Obtendo localização…</span>
+              }
+            </button>
+          }
+        </div>
+
+        @if (mensagemRegistro()) {
+          <p class="register-feedback success">{{ mensagemRegistro() }}</p>
+        }
+        @if (erroRegistro()) {
+          <p class="register-feedback error">{{ erroRegistro() }}</p>
+        }
+      </div>
+    </section>
+
+    <app-history-explorer
+      perfil="FUNCIONARIO"
+      [registros]="registros()"
+      [carregando]="carregando()"
+      (resumoAlterado)="resumo.set($event)"
+    />
+  </main>
+  <footer>
+    <span>PontoMapa</span>
+    <small>Localização exibida somente para fins de controle de ponto.</small>
+  </footer>
+</div>

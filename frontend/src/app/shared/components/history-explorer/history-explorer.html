@@ -1,0 +1,155 @@
+<section class="workspace" id="mapa">
+  <div class="filters">
+    <label class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-4-4" />
+      </svg>
+      <input
+        type="search"
+        [placeholder]="perfil() === 'GESTOR' ? 'Buscar funcionário...' : 'Buscar no histórico...'"
+        [ngModel]="busca()"
+        (ngModelChange)="busca.set($event)"
+      />
+    </label>
+
+    <label>
+      <span>Operação</span>
+      <select
+        [ngModel]="filtroOperacao()"
+        (ngModelChange)="atualizarOperacao($event)"
+      >
+        <option value="TODAS">Todas as operações</option>
+        <option value="EXPEDIENTE_INICIO">Entrada</option>
+        <option value="ALMOÇO_INICIO">Início do almoço</option>
+        <option value="ALMOÇO_FIM">Fim do almoço</option>
+        <option value="EXPEDIENTE_FIM">Saída</option>
+      </select>
+    </label>
+
+    <label>
+      <span>Data</span>
+      <input
+        type="date"
+        [ngModel]="dataFiltro()"
+        (ngModelChange)="dataFiltro.set($event)"
+      />
+    </label>
+
+    @if (busca() || filtroOperacao() !== "TODAS" || dataFiltro()) {
+      <button class="clear-button" type="button" (click)="limparFiltros()">
+        Limpar filtros
+      </button>
+    }
+  </div>
+
+  <div class="map-card">
+    <app-ponto-map
+      [registros]="filtrados()"
+      (registroSelecionado)="selecionadoId.set($event.id)"
+    />
+    <div class="map-legend">
+      @for (item of operacoes | keyvalue; track item.key) {
+        <span><i [style.background]="item.value.cor"></i>{{ item.value.curta }}</span>
+      }
+    </div>
+    <button
+      class="location-button"
+      type="button"
+      title="Usar minha localização"
+      (click)="mapa()?.usarMinhaLocalizacao()"
+    >
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3" />
+        <circle cx="12" cy="12" r="8" />
+        <path d="M12 2V5M12 19v3M2 12h3M19 12h3" />
+      </svg>
+    </button>
+
+    @if (carregando()) {
+      <div class="map-loading"><span></span>Carregando registros…</div>
+    }
+  </div>
+</section>
+
+<section class="history-section" id="historico">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">MOVIMENTAÇÕES</p>
+      <h2>Histórico recente</h2>
+    </div>
+    <span>{{ filtrados().length }} resultado(s)</span>
+  </div>
+
+  <div class="history-layout">
+    <div class="history-list">
+      @for (registro of filtrados(); track registro.id) {
+        <button
+          type="button"
+          class="history-row"
+          [class.selected]="selecionadoId() === registro.id"
+          (click)="selecionar(registro)"
+        >
+          <span
+            class="operation-dot"
+            [class]="operacoes[registro.operacao].classe"
+          ><i></i></span>
+          <span class="person">
+            <strong>{{ registro.funcionarioNome }}</strong>
+            <small>{{ operacoes[registro.operacao].label }}</small>
+          </span>
+          <span class="date">
+            <strong>{{ registro.dataHoraOperacao | date: "HH:mm" }}</strong>
+            <small>{{ registro.dataHoraOperacao | date: "dd MMM" }}</small>
+          </span>
+          <span class="coordinates">
+            {{ formatarCoordenada(registro.lat) }},
+            {{ formatarCoordenada(registro.lng) }}
+          </span>
+          <span class="arrow">→</span>
+        </button>
+      } @empty {
+        <div class="empty-state">
+          <span>⌖</span>
+          <h3>Nenhum registro encontrado</h3>
+          <p>Tente alterar ou remover os filtros.</p>
+          <button type="button" (click)="limparFiltros()">Limpar filtros</button>
+        </div>
+      }
+    </div>
+
+    @if (selecionado(); as item) {
+      <aside class="detail-card">
+        <div class="detail-top">
+          <span
+            class="detail-icon"
+            [style.background]="operacoes[item.operacao].cor"
+          >⌖</span>
+          <span class="status" [class]="operacoes[item.operacao].classe">
+            {{ operacoes[item.operacao].curta }}
+          </span>
+        </div>
+        <p class="eyebrow">REGISTRO SELECIONADO</p>
+        <h3>{{ item.funcionarioNome }}</h3>
+        <p class="detail-email">{{ item.funcionarioEmail || "Sem e-mail informado" }}</p>
+        <dl>
+          <div>
+            <dt>Operação</dt>
+            <dd>{{ operacoes[item.operacao].label }}</dd>
+          </div>
+          <div>
+            <dt>Data e hora</dt>
+            <dd>{{ item.dataHoraOperacao | date: "dd/MM/yyyy 'às' HH:mm" }}</dd>
+          </div>
+          <div>
+            <dt>Localização</dt>
+            <dd>{{ formatarCoordenada(item.lat) }}, {{ formatarCoordenada(item.lng) }}</dd>
+          </div>
+        </dl>
+        <button type="button" class="map-link" (click)="selecionar(item)">
+          Ver no mapa <span>↗</span>
+        </button>
+      </aside>
+    }
+  </div>
+</section>

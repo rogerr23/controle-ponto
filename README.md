@@ -37,6 +37,66 @@ As operações de ponto disponíveis são:
 - ModelMapper
 - Bean Validation
 - Swagger/OpenAPI
+- Angular 20
+- Leaflet
+- OpenStreetMap
+
+## Frontend com mapa
+
+O projeto Angular está na pasta `frontend`. A tela consulta os registros da API,
+exibe cada operação no mapa e mantém um histórico filtrável por funcionário,
+operação e data.
+
+Existem dois acessos:
+
+- **Funcionário:** registra início do expediente, início/fim do almoço e fim do
+  expediente usando a localização atual; também consulta somente o próprio
+  histórico no mapa.
+- **Gestor:** consulta o histórico e a localização de todos os funcionários.
+  Também cadastra novos funcionários com nome, e-mail e senha inicial para que
+  eles possam acessar o próprio painel.
+
+Na tela de login também há um modo de demonstração para testar os dois painéis
+sem precisar cadastrar usuários ou iniciar a API.
+
+### Arquitetura do frontend
+
+O Angular está organizado por responsabilidade:
+
+```text
+frontend/src/app
+├── core
+│   ├── constants    # Enum e apresentação das operações
+│   ├── data         # Dados exclusivos do modo de demonstração
+│   ├── guards       # Proteção das rotas por perfil
+│   ├── models       # Contratos tipados da aplicação e da API
+│   ├── services     # Autenticação, funcionários e histórico
+│   └── utils        # Conversão dos dados da API para a interface
+├── features
+│   ├── auth         # Página de login
+│   ├── funcionario  # Jornada e histórico pessoal
+│   └── gestor       # Equipe, cadastro e histórico geral
+├── shared
+│   └── components   # Cabeçalho, resumo, mapa e histórico reutilizáveis
+├── app.routes.ts    # Rotas carregadas sob demanda
+└── app.ts           # Shell mínimo da aplicação
+```
+
+As rotas `/funcionario` e `/gestor` são protegidas pelo perfil da sessão. As
+páginas são carregadas sob demanda e o acesso à API fica isolado dos componentes
+visuais.
+
+Com a API iniciada na porta `8081`, execute:
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Abra `http://localhost:4200`. O servidor Angular encaminha automaticamente as
+requisições `/api` para o backend. Caso a API esteja indisponível, a tela usa
+registros de demonstração para facilitar o desenvolvimento visual.
 
 ## Estrutura
 

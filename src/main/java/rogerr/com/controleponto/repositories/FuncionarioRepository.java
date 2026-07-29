@@ -10,6 +10,8 @@ import java.util.UUID;
 
 @Repository
 public interface FuncionarioRepository extends JpaRepository<Funcionario, UUID> {
+    boolean existsByEmailIgnoreCase(String email);
+
     @Query("select fu from Funcionario fu where fu.email = :pEmail and fu.senha = :pSenha")
     Funcionario findByEmailAndSenha(@Param("pEmail") String email, @Param("pSenha") String senha);
 }
