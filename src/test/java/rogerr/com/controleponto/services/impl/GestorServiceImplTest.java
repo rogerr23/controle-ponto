@@ -37,26 +37,26 @@ class GestorServiceImplTest {
 
     @Test
     void cadastrarDeveGerarIdESalvarGestor() {
-        GestorRequest request = new GestorRequest("Ana Gestora", "ana@exemplo.com", "Senha@123");
+        GestorRequest request = new GestorRequest("Roger Gestor", "roger@exemplo.com", "Senha@123");
 
         GestorResponse response = service.cadastrar(request);
 
         assertNotNull(response.getId());
-        assertEquals("Ana Gestora", response.getNome());
-        assertEquals("ana@exemplo.com", response.getEmail());
+        assertEquals("Roger Gestor", response.getNome());
+        assertEquals("roger@exemplo.com", response.getEmail());
         verify(gestorRepository).save(any(Gestor.class));
     }
 
     @Test
     void consultarPorIdDeveRetornarGestorExistente() {
         UUID id = UUID.randomUUID();
-        Gestor gestor = new Gestor(id, "Ana Gestora", "ana@exemplo.com", "Senha@123");
+        Gestor gestor = new Gestor(id, "Roger Gestor", "roger@exemplo.com", "Senha@123");
         when(gestorRepository.findById(id)).thenReturn(Optional.of(gestor));
 
         GestorResponse response = service.consultarPorId(id);
 
         assertEquals(id, response.getId());
-        assertEquals("Ana Gestora", response.getNome());
+        assertEquals("Roger Gestor", response.getNome());
     }
 
     @Test
@@ -72,19 +72,19 @@ class GestorServiceImplTest {
     @Test
     void autenticarDeveRetornarGestorQuandoCredenciaisSaoValidas() {
         UUID id = UUID.randomUUID();
-        AutenticarGestorRequest request = new AutenticarGestorRequest("ana@exemplo.com", "Senha@123");
-        Gestor gestor = new Gestor(id, "Ana Gestora", request.getEmail(), request.getSenha());
+        AutenticarGestorRequest request = new AutenticarGestorRequest("roger@exemplo.com", "Senha@123");
+        Gestor gestor = new Gestor(id, "Roger Gestor", request.getEmail(), request.getSenha());
         when(gestorRepository.findByEmailAndSenha(request.getEmail(), request.getSenha())).thenReturn(gestor);
 
         AutenticarGestorResponse response = service.autenticar(request);
 
         assertEquals(id, response.getId());
-        assertEquals("Ana Gestora", response.getNome());
+        assertEquals("Roger Gestor", response.getNome());
     }
 
     @Test
     void autenticarDeveRejeitarCredenciaisInvalidas() {
-        AutenticarGestorRequest request = new AutenticarGestorRequest("ana@exemplo.com", "SenhaErrada@1");
+        AutenticarGestorRequest request = new AutenticarGestorRequest("roger@exemplo.com", "SenhaErrada@1");
         when(gestorRepository.findByEmailAndSenha(request.getEmail(), request.getSenha())).thenReturn(null);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> service.autenticar(request));
